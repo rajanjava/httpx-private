@@ -519,8 +519,9 @@ class QueryParams(typing.Mapping[str, str]):
         q = httpx.QueryParams("a=123&a=456&b=789")
         assert q.get("a") == "123"
         """
-        if key in self._dict:
-            return self._dict[str(key)][0]
+        key_str = str(key)
+        if key_str in self._dict:
+            return self._dict[key_str][0]
         return default
 
     def get_list(self, key: str) -> list[str]:
@@ -598,10 +599,10 @@ class QueryParams(typing.Mapping[str, str]):
         return q
 
     def __getitem__(self, key: typing.Any) -> str:
-        return self._dict[key][0]
+        return self._dict[str(key)][0]
 
     def __contains__(self, key: typing.Any) -> bool:
-        return key in self._dict
+        return str(key) in self._dict
 
     def __iter__(self) -> typing.Iterator[typing.Any]:
         return iter(self.keys())

@@ -134,3 +134,26 @@ def test_queryparams_are_hashable():
     )
 
     assert len(set(params)) == 2
+
+
+def test_queryparam_non_string_keys():
+    q = httpx.QueryParams({123: "val", 456: ["a", "b"]})
+
+    # Test key presence
+    assert 123 in q
+    assert "123" in q
+    assert 999 not in q
+
+    # Test __getitem__
+    assert q[123] == "val"
+    assert q["123"] == "val"
+
+    # Test get()
+    assert q.get(123) == "val"
+    assert q.get("123") == "val"
+    assert q.get(999, default="missing") == "missing"
+
+    # Test get_list()
+    assert q.get_list(456) == ["a", "b"]
+    assert q.get_list("456") == ["a", "b"]
+
