@@ -83,6 +83,11 @@ tests/models/test_queryparams.py:143: AssertionError
 
 ---
 
+## Solution Approach
+1. **Consistency Across Input Paths:** Audited every initialization path in `QueryParams.__init__` (`Mapping`, `Sequence`, `str`, `bytes`) to find where non-string keys were handled inconsistently.
+2. **Unified Key Normalization:** Applied consistent string coercion for keys at construction time using the existing primitive-to-str conversion logic so lookup (`__getitem__`, `get`, `__contains__`) and serialization behave identically regardless of input container type.
+3. **TDD & Regression Safety:** Added unit tests for integer/boolean/non-string keys in `QueryParams` prior to fixing, ensuring zero regressions across URL encoding and query parameter suites.
+
 ## 💡 Solution
 
 Updated `get()`, `__getitem__()`, and `__contains__()` in `httpx/_urls.py` to ensure `key` is converted using `str(key)` before membership checks or indexing:
